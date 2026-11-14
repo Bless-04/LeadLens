@@ -1,8 +1,9 @@
-import { VISION_MATERIALS, type PipePhotoAnalysis } from '../src/types/pipe.ts';
 import { setTimeout as delay } from 'node:timers/promises';
+import type { PipeMaterial, PipePhotoAnalysis } from '../src/types/pipe';
 
 const maxImageLength = 2_800_000;
 const transientStatuses = [500, 502, 503, 504];
+const visionMaterials: readonly PipeMaterial[] = ['lead', 'copper', 'galvanized_steel', 'plastic', 'unknown'];
 
 async function generateContent(model: string, key: string, body: string, signal: AbortSignal) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
@@ -59,7 +60,7 @@ export default {
           responseJsonSchema: {
             type: 'object',
             properties: {
-              material: { type: 'string', enum: VISION_MATERIALS },
+              material: { type: 'string', enum: visionMaterials },
               confidence: { type: 'number', minimum: 0, maximum: 1 },
               reasoning: { type: 'string' },
             },
@@ -89,7 +90,7 @@ export default {
         return Response.json({ error: 'Gemini returned no assessment for this image. Try a clearer photo of the pipe.' }, { status: 422 });
       }
       const result: PipePhotoAnalysis = JSON.parse(text || 'null');
-      if (!result || !VISION_MATERIALS.includes(result.material)
+      if (!result || !visionMaterials.includes(result.material)
         || !Number.isFinite(result.confidence) || result.confidence < 0 || result.confidence > 1
         || typeof result.reasoning !== 'string' || !result.reasoning.trim() || result.reasoning.length > 1_000) {
         throw new Error('Invalid Gemini response');
