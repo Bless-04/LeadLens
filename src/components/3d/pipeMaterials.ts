@@ -24,7 +24,7 @@ export const PIPE_MATERIAL_CONFIGS: Readonly<Record<PipeMaterial, PipeVisualConf
     label: 'Copper',
     body: { color: '#95552f', metalness: 0.55, roughness: 0.72 },
     detail: '#63361f',
-    scratch: { color: '#ed955c', metalness: 0.9, roughness: 0.25, description: 'The dull reddish-brown surface reveals a bright, penny-orange streak.' },
+    scratch: { color: '#ffc497', metalness: 0.9, roughness: 0.25, description: 'The dull reddish-brown surface reveals a bright, penny-orange streak.' },
   },
   galvanized_steel: {
     label: 'Galvanized steel',

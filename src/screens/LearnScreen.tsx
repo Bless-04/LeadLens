@@ -13,6 +13,7 @@ import {
   DollarSign
 } from 'lucide-react';
 import { DisclaimerBanner } from '../components/DisclaimerBanner';
+import { PipeModelCard } from '../components/3d/PipeModelCard';
 
 export const LearnScreen: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -34,6 +35,7 @@ export const LearnScreen: React.FC = () => {
       </div>
 
       <DisclaimerBanner />
+      <PipeModelCard />
 
       {/* Section 1: Why Lead Pipes Matter */}
       <section className="bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-xs space-y-4">

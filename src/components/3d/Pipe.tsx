@@ -47,7 +47,11 @@ function scratchVertices({ angle, y, length, width, rise }: (typeof scratches)[n
 export const Pipe = memo(function Pipe({ material, scratched }: { material: PipeMaterial; scratched: boolean }) {
   const visual = getPipeVisual(material);
   const surface = visual.scratch;
-  const scratchesGeometry = useMemo(() => scratched && surface ? scratches.map(scratchVertices) : [], [scratched, surface]);
+  const scratchesGeometry = useMemo(() => {
+    if (!scratched || !surface) return [];
+    const widthScale = material === 'copper' ? 1.75 : 1;
+    return scratches.map((mark) => scratchVertices({ ...mark, width: mark.width * widthScale }));
+  }, [scratched, surface, material]);
   const pipeGeometry = useRef<LatheGeometry>(null);
   const invalidate = useThree((state) => state.invalidate);
 
@@ -102,7 +106,7 @@ export const Pipe = memo(function Pipe({ material, scratched }: { material: Pipe
             metalness={surface.metalness}
             roughness={surface.roughness}
             emissive={surface.color}
-            emissiveIntensity={material === 'lead' ? 0.28 : 0.05}
+            emissiveIntensity={material === 'copper' ? 0.45 : material === 'lead' ? 0.28 : 0.05}
           />
         </mesh>
       ))}
