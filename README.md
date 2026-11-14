@@ -4,7 +4,7 @@
 
 ## The Problem
 
-Lead poisoning harms millions of people around the world.
+Lead poisoning kills millions of people around the world.
 
 Low-income families are often at greater risk.
 
