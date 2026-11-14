@@ -87,7 +87,7 @@ LeadLens/
 │   ├── components/       # UI Components (Navbar, BottomNav, DisclaimerBanner, DemoModal)
 │   ├── data/             # Demo scenarios & sample pipe SVG illustrations
 │   ├── screens/          # Core screens (Home, Camera, PipeCheck, Results, Learn)
-│   ├── services/         # Decoupled pipe material analysis engine & Codex vision hook
+│   ├── services/         # Physical pipe assessment and local inspection storage
 │   ├── types/            # Frontend TypeScript data models
 │   ├── App.tsx           # Mobile shell, state management & view routing
 │   ├── main.tsx          # React application entry point
@@ -135,6 +135,18 @@ LeadLens/
    ```
 
 ---
+
+## Baltimore map and Vercel Functions
+
+Copy `.env.example` to `.env` for local development. `npm run dev` serves the same two handlers that Vercel runs from the root `api/` directory. Set the matching variables in the Vercel project settings for Preview and Production. Keep the Gemini and Redis credentials server-side.
+
+- `GEMINI_API_KEY` enables photo assessment. `GEMINI_MODEL` overrides the default model. The uploaded image is resized and re-encoded in the browser, then sent to Gemini only when the user requests an assessment. The physical check determines the inspection pin's material and risk.
+- `NOMINATIM_REVERSE_URL` and `NOMINATIM_USER_AGENT` configure optional GPS address lookup. Use a provider appropriate for home addresses and your expected traffic. For demonstrations with nonconfidential test coordinates, the public OSM endpoint is opt-in and requires shared Redis credentials for caching and throttling. Its policy limits the entire app to one request per second. [Public Nominatim usage policy](https://operations.osmfoundation.org/policies/nominatim/)
+- `VITE_OSM_TILE_URL` and `VITE_OSM_TILE_ATTRIBUTION` configure the Leaflet basemap. The default displays attributed OpenStreetMap raster tiles. [OpenStreetMap tile usage policy](https://operations.osmfoundation.org/policies/tiles/)
+
+Complete a pipe check, then choose where to place its pin by using GPS, clicking the map, or entering coordinates. You can correct or enter the street address before saving. Pins are saved in the current browser. The map links to Baltimore's official inventory and reporting portal.
+
+The experimental phone magnetometer reads the magnetic field on supported devices. Use the physical magnet test to check whether the magnet sticks to the pipe.
 
 ## 👥 Hackathon Team & Acknowledgements
 

@@ -15,17 +15,23 @@ import {
   FileText
 } from 'lucide-react';
 import { PipeAnalysisResult } from '../types/pipe';
+import { InspectionLocationCard } from '../components/InspectionLocationCard';
+import { PhotoAnalysisCard } from '../components/PhotoAnalysisCard';
 
 interface ResultsScreenProps {
   result: PipeAnalysisResult;
+  photoUrl?: string;
   onRetest: () => void;
   onNavigateToLearn: () => void;
+  onOpenMap: () => void;
 }
 
 export const ResultsScreen: React.FC<ResultsScreenProps> = ({
   result,
+  photoUrl,
   onRetest,
   onNavigateToLearn,
+  onOpenMap,
 }) => {
   const [copied, setCopied] = React.useState(false);
 
@@ -202,6 +208,11 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
           ))}
         </div>
       </section>
+
+      {!result.isDemo && photoUrl && !photoUrl.startsWith('data:image/svg+xml') && (
+        <PhotoAnalysisCard photoUrl={photoUrl} />
+      )}
+      {!result.isDemo && <InspectionLocationCard result={result} onSaved={onOpenMap} />}
 
       {/* Filter Recommendations */}
       <section className="bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-xs space-y-3">

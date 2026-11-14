@@ -1,4 +1,13 @@
 export type PipeMaterial = 'lead' | 'copper' | 'galvanized_steel' | 'plastic' | 'unknown';
+export type ScreenType = 'home' | 'camera' | 'check' | 'results' | 'map' | 'learn';
+
+export const VISION_MATERIALS = ['lead', 'copper', 'galvanized_steel', 'plastic', 'unknown'] as const;
+
+export interface PipePhotoAnalysis {
+  material: (typeof VISION_MATERIALS)[number];
+  confidence: number;
+  reasoning: string;
+}
 
 export type RiskLevel = 'high' | 'moderate' | 'low' | 'unknown';
 
