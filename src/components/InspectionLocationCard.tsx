@@ -21,6 +21,7 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
   const [locationError, setLocationError] = useState('');
   const [addressQuery, setAddressQuery] = useState('');
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
+  const [usesGeoapify, setUsesGeoapify] = useState(false);
   const [suggestionMessage, setSuggestionMessage] = useState('');
   const locationErrorId = useId();
   const addressInput = useRef<HTMLInputElement>(null);
@@ -29,7 +30,7 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
   useEffect(() => () => lookup.current?.abort(), []);
   useEffect(() => {
     const query = addressQuery.trim().replace(/\s+/g, ' ');
-    if (!/^\d[A-Z0-9 .'-]{3,59}$/i.test(query) || !/[A-Z]/i.test(query)) return;
+    if (query.length < 3 || !/[A-Z]/i.test(query)) return;
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
       try {
@@ -40,10 +41,11 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
           signal: controller.signal,
         });
         if (!response.ok) throw new Error('Address lookup failed');
-        const { suggestions: matches }: { suggestions: AddressSuggestion[] } = await response.json();
+        const { suggestions: matches, provider }: { suggestions: AddressSuggestion[]; provider?: string } = await response.json();
         if (controller.signal.aborted) return;
         setSuggestions(matches);
-        if (!matches.length) setSuggestionMessage('No Baltimore City matches. You can enter the address manually.');
+        setUsesGeoapify(provider === 'geoapify');
+        if (!matches.length) setSuggestionMessage('No matching addresses. You can enter the address manually.');
       } catch {
         if (!controller.signal.aborted) setSuggestionMessage('Address suggestions are unavailable. You can enter the address manually.');
       }
@@ -138,7 +140,7 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
   return (
     <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 text-sm">
       <h2 className="font-bold text-slate-900">Add this check to your map</h2>
-      <p className="text-slate-600">Location lookup sends your coordinates to the geocoder. Address suggestions use Baltimore City’s address data. Saved pins stay in this browser.</p>
+      <p className="text-slate-600">Location and address searches send your input to a geocoder. Saved pins stay in this browser.</p>
       <div className="flex flex-wrap gap-2">
         <button type="button" className={buttonClass} onClick={locate} disabled={pending} aria-describedby={locationError ? locationErrorId : undefined}>
           {pending ? 'Finding address…' : 'Use my location'}
@@ -165,7 +167,7 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
           value={address}
           maxLength={400}
           autoComplete="off"
-          placeholder="Start with the house number"
+          placeholder="e.g. Calvert or 100 North Calvert"
           onChange={(event) => {
             const value = event.target.value;
             if (addressSetPin.current) {
@@ -198,6 +200,7 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
         </ul>
       )}
       {suggestionMessage && <p role="status" className="text-xs text-slate-600">{suggestionMessage}</p>}
+      {usesGeoapify && <p className="text-xs text-slate-600">Address data from <a className="underline" href="https://www.geoapify.com/">Geoapify</a> and <a className="underline" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</p>}
       {coordinates && <p className="text-xs text-slate-600">Pin at {coordinates.latitude.toFixed(5)}, {coordinates.longitude.toFixed(5)}</p>}
       {message && <p role="status" className="text-slate-700">{message}</p>}
       <button type="button" onClick={save} disabled={!coordinates || pending} className="rounded-lg bg-brand-700 px-3 py-2 font-semibold text-white disabled:opacity-50">
