@@ -32,6 +32,10 @@ When working on this repository, prioritize:
 - **Accuracy & Safety Disclaimers**: Clarify that physical tests and computer vision checks provide risk assessments, not official laboratory water quality certifications.
 - **Clean Architecture**: Keep UI flows modular and provide deterministic fallback steps for users without compatible cameras or hardware.
 
+## Vercel deployment
+
+LeadLens is intended to deploy on Vercel. Design backend endpoints to work in the Vercel deployment and prefer Vercel Functions for server-side logic. If a backend feature needs a different service, document the reason and how the Vercel deployment connects to it.
+
 ## Git commits
 
 - Use `type(scope): summary` for the first line. Use lowercase types and scopes. Choose `feat` for new behavior, `fix` for a correction, `refactor` for restructuring, `test` for tests, `docs` for documentation, `build` for build tooling, and `chore` for other maintenance. Use a project or area as the scope, such as `statwork`, `recovery-drill`, or `repo`.
