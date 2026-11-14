@@ -5,7 +5,11 @@ LeadLens is a mobile web application designed to eliminate public health hazards
 
 ---
 
+<<<<<<< HEAD
 ## The Public Health Crisis
+=======
+Lead poisoning kills millions of people around the world.
+>>>>>>> 63fbd5e983b39f9a1092bcfb32f6e10a91c2d0f6
 
 Aging urban water infrastructure presents a severe systemic risk to municipal populations across the United States. 
 
@@ -35,6 +39,7 @@ To overcome strict mobile operating system sandbox limitations—specifically Ap
 * **Deployment & Hosting:** Edge-optimized static distribution, supporting secure HTTPS context required for browser hardware permissions.
 * **Data Payload Structure:** Standardized JSON municipal record packages containing material classification confidence scores, UTC timestamps, and localized metadata.
 
+<<<<<<< HEAD
 ---
 
 ## Local Development & Installation
@@ -52,3 +57,21 @@ To run and test LeadLens locally with active camera and motion sensor permission
    git clone https://github.com/willengineers/leadlens.git
    cd leadlens
    ```
+=======
+CodeClash Hackathon — Towson University
+
+## Pipe identification logic
+
+The TypeScript rule-based classifier and unit tests are in `src/pipe-analysis`.
+There is no React/Vite frontend in this checkout yet. Photos are accepted for
+integration but are not analyzed; results use manually reported observations.
+All results require confirmation and do not establish drinking-water safety.
+
+```sh
+npm ci
+npm run typecheck
+npm test
+```
+
+See [frontend integration and demo usage](docs/pipe-analysis.md).
+>>>>>>> 63fbd5e983b39f9a1092bcfb32f6e10a91c2d0f6

@@ -1,77 +1,81 @@
 /**
- * override.js — Hidden demo override for live stage presentations.
- * Double-tapping the LeadLens logo/header on the welcome screen opens a modal
- * to force-select a material result, bypassing sensor detection.
+ * override.js — Hidden Demo Safety Net
+ *
+ * Provides a double-tap gesture on the LeadLens logo (home screen)
+ * that opens a modal allowing presenters to force a specific material
+ * result during live stage demos.
+ *
+ * Activation:  Double-tap the logo icon on the home screen.
+ * Visibility:  The trigger is invisible to the audience / judges.
  */
 
-const Override = (() => {
-  const DOUBLE_TAP_THRESHOLD = 400; // ms between taps to count as double-tap
+(() => {
+  const DOUBLE_TAP_WINDOW = 450; // ms
 
-  let lastTap = 0;
+  let lastTapTime = 0;
   let $modal;
 
-  /**
-   * Initialize double-tap listener on the logo.
-   */
   function init() {
     $modal = document.getElementById('override-modal');
-    const $logoTarget = document.getElementById('logo-tap-target');
+    const $logo = document.getElementById('logo-tap-target');
 
-    if ($logoTarget) {
-      $logoTarget.addEventListener('touchend', handleTap);
-      $logoTarget.addEventListener('click', handleTap);
-    }
+    if (!$logo || !$modal) return;
 
-    // Close modal on background click
+    // Use both touch and click to cover all devices
+    $logo.addEventListener('touchend', onTap, { passive: false });
+    $logo.addEventListener('click', onTap);
+
+    // Close on backdrop click
     $modal.addEventListener('click', (e) => {
       if (e.target === $modal) close();
     });
 
-    console.log('[Override] Demo override initialized (double-tap logo to activate)');
+    console.log('[Override] Initialized — double-tap logo to activate');
   }
 
-  /**
-   * Detect double-tap gesture.
-   */
-  function handleTap(e) {
+  function onTap(e) {
+    // Prevent double-firing on touch devices
+    if (e.type === 'click' && e.sourceCapabilities?.firesTouchEvents) return;
     e.preventDefault();
-    const now = Date.now();
 
-    if (now - lastTap < DOUBLE_TAP_THRESHOLD) {
-      // Double-tap detected
+    const now = Date.now();
+    if (now - lastTapTime < DOUBLE_TAP_WINDOW) {
       open();
-      lastTap = 0;
+      lastTapTime = 0;
     } else {
-      lastTap = now;
+      lastTapTime = now;
     }
   }
 
-  /**
-   * Open the override modal.
-   */
   function open() {
     $modal.classList.remove('hidden');
-    console.log('[Override] Modal opened');
   }
 
-  /**
-   * Close the override modal.
-   */
   function close() {
     $modal.classList.add('hidden');
   }
 
   /**
-   * Force a material result and go directly to the result screen.
+   * Force a material result and jump straight to the results view.
    */
   function force(material) {
     close();
-    App.setResult(material, 'demo_override', material === 'galvanized_steel');
-    console.log(`[Override] Forced result: ${material}`);
+
+    // Set state directly via the public API
+    const state = LeadLensApp.getState();
+    // Use setResult with demo_override method and high confidence
+    LeadLensApp.setResult(material, 'demo_override', material === 'galvanized_steel');
+
+    console.log(`[Override] Forced: ${material}`);
   }
 
-  // Auto-init when DOM is ready
-  document.addEventListener('DOMContentLoaded', init);
-
-  return { open, close, force };
+  // Wire into the LeadLensApp.override namespace
+  document.addEventListener('DOMContentLoaded', () => {
+    init();
+    if (window.LeadLensApp) {
+      LeadLensApp.override.open  = open;
+      LeadLensApp.override.close = close;
+      LeadLensApp.override.force = force;
+    }
+  });
 })();

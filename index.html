@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0f172a">
-  <title>LeadLens — Know Your Pipes</title>
+  <meta name="theme-color" content="#0a0f1e">
+  <title>LeadLens</title>
 
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -15,319 +15,383 @@
       theme: {
         extend: {
           colors: {
-            brand: {
-              50:  '#eff6ff',
-              100: '#dbeafe',
-              200: '#bfdbfe',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-              900: '#0f172a',
+            slate: {
+              950: '#0a0f1e',
             },
-            danger:  '#ef4444',
-            success: '#22c55e',
-            warn:    '#f59e0b',
+            brand: {
+              50:  '#eef7ff',
+              100: '#d9edff',
+              200: '#bce0ff',
+              300: '#8eccff',
+              400: '#58afff',
+              500: '#3b8bff',
+              600: '#1e6bf5',
+              700: '#1755e1',
+              800: '#1945b6',
+              900: '#1a3d8f',
+            },
+            accent: {
+              DEFAULT: '#06d6a0',
+              dark:    '#059669',
+            },
+            danger:  { DEFAULT: '#ef4444', dark: '#991b1b' },
+            warn:    { DEFAULT: '#f59e0b', dark: '#92400e' },
+            success: { DEFAULT: '#22c55e', dark: '#166534' },
           },
           fontFamily: {
             sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
           },
         },
       },
     }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-brand-900 text-white font-sans min-h-screen overflow-x-hidden">
+<body class="bg-slate-950 text-white font-sans min-h-screen overflow-x-hidden select-none">
 
-  <!-- ===== SCREEN 0: SPLASH / WELCOME ===== -->
-  <section id="screen-welcome" class="screen active flex flex-col items-center justify-center min-h-screen px-6 text-center">
-    <div id="logo-tap-target" class="mb-6">
-      <div class="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-brand-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-brand-500/30">
-        <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/>
-          <path stroke-linecap="round" stroke-linejoin="round" d="M11 8v6M8 11h6"/>
-        </svg>
-      </div>
-    </div>
-    <h1 class="text-4xl font-extrabold tracking-tight mb-2">Lead<span class="text-cyan-400">Lens</span></h1>
-    <p class="text-brand-200 text-lg mb-1">Know Your Pipes. Protect Your Family.</p>
-    <p class="text-brand-200/60 text-sm mb-8">Free water service line identification — just your phone.</p>
-    <button onclick="App.goTo('info')" class="btn-primary w-full max-w-xs">
-      Get Started
-    </button>
-    <p class="text-xs text-brand-200/40 mt-6">No sign-up required · Works on any smartphone</p>
-  </section>
+  <!-- ================================================================== -->
+  <!--  VIEW 1 — HOME                                                     -->
+  <!-- ================================================================== -->
+  <section id="view-home" data-view class="view active">
+    <div class="flex flex-col items-center justify-between min-h-screen px-6 py-10">
 
-  <!-- ===== SCREEN 1: SAFETY INFO & PIPE GUIDE ===== -->
-  <section id="screen-info" class="screen flex flex-col min-h-screen px-6 py-10">
-    <button onclick="App.goTo('welcome')" class="self-start text-brand-200/60 text-sm mb-4">← Back</button>
-    <h2 class="text-2xl font-bold mb-4">Before You Start</h2>
+      <!-- Top Spacer -->
+      <div class="w-full"></div>
 
-    <div class="space-y-4 flex-1">
-      <div class="card">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">📍</span>
-          <div>
-            <h3 class="font-semibold mb-1">Find Your Water Service Line</h3>
-            <p class="text-sm text-brand-200/80">Look where the main water pipe enters your home — usually in the basement, crawl space, or utility closet near the water meter.</p>
+      <!-- Logo & Brand -->
+      <div class="text-center">
+        <div id="logo-tap-target" class="inline-block mb-5">
+          <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-brand-500 via-brand-600 to-accent flex items-center justify-center shadow-xl shadow-brand-600/20 ring-1 ring-white/10">
+            <svg class="w-11 h-11 text-white drop-shadow" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="7"/>
+              <path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
+              <path stroke-linecap="round" d="M11 8v6M8 11h6"/>
+            </svg>
           </div>
         </div>
+        <h1 class="text-4xl font-black tracking-tight leading-none mb-1">Lead<span class="text-accent">Lens</span></h1>
+        <p class="text-white/50 text-sm font-medium">Know Your Pipes. Protect Your Family.</p>
       </div>
 
-      <div class="card">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">🔦</span>
-          <div>
-            <h3 class="font-semibold mb-1">Good Lighting</h3>
-            <p class="text-sm text-brand-200/80">Make sure the area is well-lit. We'll need to see the pipe's color and texture clearly.</p>
-          </div>
+      <!-- Mission Stat -->
+      <div class="w-full max-w-sm mt-10 mb-6">
+        <div class="stat-card text-center py-6 px-5">
+          <p class="text-xs text-white/40 uppercase tracking-widest mb-2 font-semibold">Baltimore City — Unmapped Service Lines</p>
+          <p class="text-5xl font-black tabular-nums tracking-tight text-white mb-1">
+            <span id="stat-counter">335,694</span>
+          </p>
+          <p class="text-sm text-white/50 leading-snug mt-2">
+            Residential water lines with <strong class="text-white/70">unknown material</strong>. 
+            LeadLens helps map them — one household at a time.
+          </p>
         </div>
       </div>
 
-      <div class="card">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">🧤</span>
-          <div>
-            <h3 class="font-semibold mb-1">Safety First</h3>
-            <p class="text-sm text-brand-200/80">Avoid scratching or disturbing old pipes. LeadLens uses non-invasive phone sensors only.</p>
-          </div>
-        </div>
+      <!-- CTA -->
+      <div class="w-full max-w-sm space-y-3 pb-2">
+        <button onclick="LeadLensApp.transition('scanning')" class="btn-primary w-full">
+          Begin Service Line Scan
+        </button>
+        <p class="text-center text-[11px] text-white/30">No account required. 100% private. Data stays on your device.</p>
       </div>
 
-      <div class="card bg-cyan-500/10 border-cyan-500/30">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">📱</span>
-          <div>
-            <h3 class="font-semibold mb-1">How It Works</h3>
-            <ol class="text-sm text-brand-200/80 list-decimal list-inside space-y-1 mt-1">
-              <li><strong>Tap Test</strong> — Firmly tap your phone against the pipe to check if it's magnetic (steel).</li>
-              <li><strong>Camera Scan</strong> — If non-magnetic, snap a photo for color analysis (lead vs. copper).</li>
-              <li><strong>Instant Result</strong> — Get your pipe material and submit to the city.</li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <button onclick="App.goTo('tap-test')" class="btn-primary w-full mt-6">
-      I Found My Pipe — Start Test →
-    </button>
-  </section>
-
-  <!-- ===== SCREEN 2: TAP TEST (Motion Sensor) ===== -->
-  <section id="screen-tap-test" class="screen flex flex-col items-center justify-center min-h-screen px-6 text-center">
-    <button onclick="App.goTo('info')" class="self-start text-brand-200/60 text-sm mb-4 text-left w-full">← Back</button>
-    <div class="flex-1 flex flex-col items-center justify-center w-full">
-      <p class="text-sm text-brand-200/60 uppercase tracking-widest mb-2">Step 1 of 2</p>
-      <h2 class="text-2xl font-bold mb-2">Tap Test</h2>
-      <p class="text-brand-200/80 mb-8 max-w-xs">Hold your phone firmly and <strong>tap it against the pipe</strong>. We'll detect if the metal is magnetic.</p>
-
-      <!-- Impact Visualizer Ring -->
-      <div id="tap-ring" class="w-44 h-44 rounded-full border-4 border-brand-500/40 flex items-center justify-center mb-6 transition-all duration-200">
-        <div class="text-center">
-          <p id="tap-accel" class="text-4xl font-bold tabular-nums">0.0</p>
-          <p class="text-xs text-brand-200/60 mt-1">m/s²</p>
-        </div>
-      </div>
-
-      <p id="tap-status" class="text-sm text-brand-200/60 mb-4 h-6">Waiting for tap…</p>
-
-      <!-- Threshold Bar -->
-      <div class="w-full max-w-xs mb-8">
-        <div class="flex justify-between text-xs text-brand-200/40 mb-1">
-          <span>0</span>
-          <span>Threshold: 11.5</span>
-          <span>30+</span>
-        </div>
-        <div class="h-3 bg-white/10 rounded-full overflow-hidden">
-          <div id="tap-bar" class="h-full bg-brand-500 rounded-full transition-all duration-100" style="width: 0%"></div>
-        </div>
-      </div>
-
-      <button id="btn-tap-start" onclick="Motion.startListening()" class="btn-primary w-full max-w-xs">
-        Enable Motion Sensor
-      </button>
-      <button id="btn-not-magnetic" onclick="App.goTo('camera')" class="btn-secondary w-full max-w-xs mt-3 hidden">
-        No Spike Detected — Use Camera Instead →
-      </button>
     </div>
   </section>
 
-  <!-- ===== SCREEN 3: CAMERA SCAN ===== -->
-  <section id="screen-camera" class="screen flex flex-col min-h-screen px-6 py-10">
-    <button onclick="App.goTo('tap-test')" class="self-start text-brand-200/60 text-sm mb-4">← Back</button>
-    <p class="text-sm text-brand-200/60 uppercase tracking-widest mb-2 text-center">Step 2 of 2</p>
-    <h2 class="text-2xl font-bold mb-2 text-center">Camera Scan</h2>
-    <p class="text-brand-200/80 mb-6 text-center text-sm">Point your camera at the exposed pipe surface. We'll analyze the color to determine the material.</p>
+  <!-- ================================================================== -->
+  <!--  VIEW 2 — SCANNING (sensor placeholder + guided UI)                -->
+  <!-- ================================================================== -->
+  <section id="view-scanning" data-view class="view">
+    <div class="flex flex-col min-h-screen px-5 py-8">
 
-    <!-- Camera Viewfinder -->
-    <div id="camera-container" class="relative w-full aspect-[3/4] bg-black rounded-2xl overflow-hidden mb-4 mx-auto max-w-sm">
-      <video id="camera-feed" autoplay playsinline muted class="w-full h-full object-cover"></video>
-      <!-- Crosshair overlay -->
-      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div class="w-32 h-32 border-2 border-cyan-400/60 rounded-xl"></div>
+      <!-- Top Bar -->
+      <div class="flex items-center justify-between mb-6">
+        <button onclick="LeadLensApp.transition('home')" class="text-white/40 text-sm font-medium flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M15 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <span class="text-xs text-white/30 font-mono" id="scan-step-label">STEP 1 OF 2</span>
       </div>
-      <!-- Canvas (hidden, for frame capture) -->
-      <canvas id="camera-canvas" class="hidden"></canvas>
-    </div>
 
-    <!-- Color Analysis Bar -->
-    <div id="color-analysis" class="hidden mb-4">
-      <div class="card">
-        <div class="flex items-center gap-3">
-          <div id="color-swatch" class="w-10 h-10 rounded-lg border border-white/20"></div>
-          <div class="flex-1">
-            <p class="text-sm font-semibold">Detected Color</p>
-            <p id="color-values" class="text-xs text-brand-200/60">H: — S: — L: —</p>
+      <!-- Phase A: Tap Test -->
+      <div id="scan-phase-tap" class="scan-phase active flex-1 flex flex-col items-center">
+        <h2 class="text-2xl font-bold mb-1 text-center">Tap Test</h2>
+        <p class="text-white/50 text-sm text-center mb-8 max-w-xs">Hold your phone firmly and <strong class="text-white/70">tap it against the pipe</strong>. We'll detect if the metal is magnetic.</p>
+
+        <!-- Impact Visualizer -->
+        <div id="tap-ring" class="w-40 h-40 rounded-full border-[3px] border-white/15 flex items-center justify-center mb-5 transition-all duration-200">
+          <div class="text-center">
+            <p id="tap-accel" class="text-4xl font-black tabular-nums leading-none">0.0</p>
+            <p class="text-[10px] text-white/40 mt-1.5 font-medium tracking-wide">m/s&sup2;</p>
           </div>
-          <span id="color-match" class="text-sm font-semibold px-3 py-1 rounded-full bg-white/10">—</span>
         </div>
-      </div>
-    </div>
 
-    <button id="btn-camera-start" onclick="Camera.start()" class="btn-primary w-full max-w-sm mx-auto">
-      Open Camera
-    </button>
-    <button id="btn-capture" onclick="Camera.capture()" class="btn-primary w-full max-w-sm mx-auto hidden">
-      📸 Capture & Analyze
-    </button>
-    <button id="btn-camera-confirm" onclick="Camera.confirm()" class="btn-primary w-full max-w-sm mx-auto mt-3 hidden">
-      Confirm Result →
-    </button>
+        <p id="tap-status" class="text-sm text-white/40 mb-5 h-5 text-center">Waiting for motion sensor...</p>
+
+        <!-- Threshold Bar -->
+        <div class="w-full max-w-xs mb-8">
+          <div class="flex justify-between text-[10px] text-white/25 mb-1 font-mono">
+            <span>0</span>
+            <span>THRESHOLD 11.5</span>
+            <span>30+</span>
+          </div>
+          <div class="h-2.5 bg-white/[0.06] rounded-full overflow-hidden">
+            <div id="tap-bar" class="h-full bg-brand-500 rounded-full transition-all duration-75" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <button id="btn-tap-start" onclick="Motion.startListening()" class="btn-primary w-full max-w-xs">
+          Enable Motion Sensor
+        </button>
+        <button id="btn-not-magnetic" onclick="LeadLensApp.advanceToCamera()" class="btn-secondary w-full max-w-xs mt-3 hidden">
+          No Spike Detected — Use Camera Instead
+        </button>
+      </div>
+
+      <!-- Phase B: Camera -->
+      <div id="scan-phase-camera" class="scan-phase flex-1 flex flex-col items-center">
+        <h2 class="text-2xl font-bold mb-1 text-center">Camera Scan</h2>
+        <p class="text-white/50 text-sm text-center mb-6 max-w-xs">Point your camera at the <strong class="text-white/70">exposed pipe surface</strong>. We'll analyze color to determine material.</p>
+
+        <!-- Viewfinder -->
+        <div id="camera-container" class="relative w-full aspect-[3/4] bg-black/60 rounded-2xl overflow-hidden mb-4 mx-auto max-w-sm ring-1 ring-white/10">
+          <video id="camera-feed" autoplay playsinline muted class="w-full h-full object-cover"></video>
+          <!-- Crosshair Overlay -->
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-28 h-28 border-2 border-accent/50 rounded-xl shadow-lg shadow-accent/10"></div>
+          </div>
+          <canvas id="camera-canvas" class="hidden"></canvas>
+          <!-- Scanning Overlay Label -->
+          <div id="camera-status-badge" class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-medium text-white/70 hidden">
+            Analyzing material properties...
+          </div>
+        </div>
+
+        <!-- Color Analysis Card -->
+        <div id="color-analysis" class="hidden w-full max-w-sm mb-4">
+          <div class="stat-card">
+            <div class="flex items-center gap-3">
+              <div id="color-swatch" class="w-10 h-10 rounded-lg ring-1 ring-white/15"></div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold">Detected Surface Color</p>
+                <p id="color-values" class="text-xs text-white/40 font-mono">H: -- S: -- L: --</p>
+              </div>
+              <span id="color-match" class="text-xs font-bold px-3 py-1 rounded-full bg-white/10">--</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-camera-start" onclick="Camera.start()" class="btn-primary w-full max-w-sm">
+          Open Camera
+        </button>
+        <button id="btn-capture" onclick="Camera.capture()" class="btn-primary w-full max-w-sm hidden">
+          Capture and Analyze
+        </button>
+        <button id="btn-camera-confirm" onclick="Camera.confirm()" class="btn-primary w-full max-w-sm mt-3 hidden">
+          Confirm Result
+        </button>
+      </div>
+
+    </div>
   </section>
 
-  <!-- ===== SCREEN 4: RESULT ===== -->
-  <section id="screen-result" class="screen flex flex-col items-center min-h-screen px-6 py-10">
-    <div class="flex-1 flex flex-col items-center justify-center w-full max-w-sm">
+  <!-- ================================================================== -->
+  <!--  VIEW 3 — RESULTS                                                  -->
+  <!-- ================================================================== -->
+  <section id="view-results" data-view class="view">
+    <div class="flex flex-col items-center min-h-screen px-5 py-10">
+      <div class="flex-1 flex flex-col items-center justify-center w-full max-w-sm">
 
-      <!-- Result Icon -->
-      <div id="result-icon" class="w-28 h-28 rounded-full flex items-center justify-center mb-6 text-5xl">
-        <!-- Populated by JS -->
-      </div>
-
-      <h2 id="result-title" class="text-3xl font-extrabold mb-2 text-center">—</h2>
-      <p id="result-subtitle" class="text-brand-200/80 text-center mb-6">—</p>
-
-      <!-- Detail Card -->
-      <div id="result-card" class="card w-full mb-6">
-        <div class="space-y-3">
-          <div class="flex justify-between text-sm">
-            <span class="text-brand-200/60">Material</span>
-            <span id="result-material" class="font-semibold">—</span>
-          </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-brand-200/60">Magnetic</span>
-            <span id="result-magnetic" class="font-semibold">—</span>
-          </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-brand-200/60">Health Risk</span>
-            <span id="result-risk" class="font-semibold">—</span>
-          </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-brand-200/60">Detection Method</span>
-            <span id="result-method" class="font-semibold">—</span>
-          </div>
-          <hr class="border-white/10">
-          <p id="result-advice" class="text-sm text-brand-200/80">—</p>
+        <!-- Result Icon -->
+        <div id="result-icon-wrap" class="w-28 h-28 rounded-full flex items-center justify-center mb-5">
+          <span id="result-icon" class="text-5xl"></span>
         </div>
-      </div>
 
-      <button onclick="App.goTo('submit')" class="btn-primary w-full">
-        Submit to Baltimore HCD →
-      </button>
-      <button onclick="App.goTo('welcome')" class="btn-secondary w-full mt-3">
-        Start Over
-      </button>
+        <!-- Title -->
+        <h2 id="result-title" class="text-3xl font-black mb-1 text-center">--</h2>
+        <p id="result-subtitle" class="text-white/50 text-sm text-center mb-2 max-w-xs">--</p>
+
+        <!-- Confidence Badge -->
+        <div id="result-confidence-wrap" class="mb-6">
+          <span id="result-confidence" class="inline-flex items-center gap-1.5 text-sm font-bold px-4 py-1.5 rounded-full bg-white/10 ring-1 ring-white/10">
+            -- %
+          </span>
+        </div>
+
+        <!-- Health Alert (Lead only) -->
+        <div id="health-alert" class="hidden w-full mb-5 animate-slide-up">
+          <div class="bg-danger-dark/40 border border-danger/30 rounded-2xl p-4">
+            <div class="flex gap-3">
+              <div class="text-danger text-xl leading-none mt-0.5">!</div>
+              <div>
+                <p class="text-sm font-bold text-danger mb-1">Public Health Advisory</p>
+                <p class="text-xs text-white/70 leading-relaxed">Lead exposure is harmful, especially for children under 6 and pregnant women. Contact Baltimore HCD immediately for a free water test kit and pipe replacement consultation.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail Card -->
+        <div class="stat-card w-full mb-6 animate-slide-up">
+          <div class="space-y-3">
+            <div class="flex justify-between text-sm">
+              <span class="text-white/40">Material</span>
+              <span id="result-material" class="font-semibold">--</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-white/40">Magnetic Response</span>
+              <span id="result-magnetic" class="font-semibold">--</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-white/40">Health Risk</span>
+              <span id="result-risk" class="font-semibold">--</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-white/40">Detection Method</span>
+              <span id="result-method" class="font-semibold">--</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-white/40">Confidence</span>
+              <span id="result-confidence-detail" class="font-semibold font-mono">-- %</span>
+            </div>
+            <hr class="border-white/[0.06]">
+            <p id="result-advice" class="text-xs text-white/50 leading-relaxed">--</p>
+          </div>
+        </div>
+
+        <button onclick="LeadLensApp.transition('submission')" class="btn-primary w-full">
+          Submit to Baltimore HCD
+        </button>
+        <button onclick="LeadLensApp.reset()" class="btn-secondary w-full mt-3">
+          Start Over
+        </button>
+
+      </div>
     </div>
   </section>
 
-  <!-- ===== SCREEN 5: MOCK CITY SUBMISSION ===== -->
-  <section id="screen-submit" class="screen flex flex-col min-h-screen px-6 py-10">
-    <div class="flex-1 flex flex-col items-center justify-center w-full max-w-sm mx-auto">
-      <!-- Submission Form -->
-      <div id="submit-form" class="w-full">
-        <h2 class="text-2xl font-bold mb-2 text-center">Report Your Results</h2>
-        <p class="text-brand-200/80 text-center text-sm mb-6">Submit your pipe identification to Baltimore Housing & Community Development.</p>
+  <!-- ================================================================== -->
+  <!--  VIEW 4 — SUBMISSION                                               -->
+  <!-- ================================================================== -->
+  <section id="view-submission" data-view class="view">
+    <div class="flex flex-col items-center min-h-screen px-5 py-10">
+      <div class="flex-1 flex flex-col items-center justify-center w-full max-w-sm">
 
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">Full Name</label>
-            <input type="text" id="field-name" placeholder="Jane Doe" class="input-field">
+        <!-- Form -->
+        <div id="submit-form-wrap">
+          <div class="text-center mb-8">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-brand-600/20 flex items-center justify-center mb-3 ring-1 ring-brand-500/20">
+              <svg class="w-6 h-6 text-brand-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <h2 class="text-2xl font-bold mb-1">Report Your Results</h2>
+            <p class="text-white/40 text-sm">Submit identification to Baltimore Housing &amp; Community Development</p>
           </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Address</label>
-            <input type="text" id="field-address" placeholder="123 N. Charles St, Baltimore MD" class="input-field">
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">Full Name</label>
+              <input type="text" id="field-name" placeholder="Jane Doe" class="input-field" autocomplete="name">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">Residential Address</label>
+              <input type="text" id="field-address" placeholder="123 N. Charles St, Baltimore MD 21201" class="input-field" autocomplete="street-address">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">Detected Material</label>
+              <input type="text" id="field-material" readonly class="input-field opacity-60 cursor-not-allowed">
+            </div>
           </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Detected Material</label>
-            <input type="text" id="field-material" readonly class="input-field bg-white/5 cursor-not-allowed">
-          </div>
-          <button onclick="Results.submitReport()" class="btn-primary w-full mt-2">
-            📤 Submit Report
+
+          <button onclick="LeadLensApp.submitReport()" class="btn-primary w-full mt-6">
+            Submit Report
           </button>
         </div>
-      </div>
 
-      <!-- Success Confirmation (hidden initially) -->
-      <div id="submit-success" class="hidden w-full text-center">
-        <div class="w-20 h-20 mx-auto rounded-full bg-success/20 flex items-center justify-center mb-4">
-          <svg class="w-10 h-10 text-success" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-          </svg>
-        </div>
-        <h2 class="text-2xl font-bold mb-2">Report Submitted!</h2>
-        <p class="text-brand-200/80 text-sm mb-1">Your water service line data has been sent to:</p>
-        <p class="font-semibold text-cyan-400 mb-4">Baltimore Housing & Community Development</p>
-        <div class="card text-left mb-6">
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between">
-              <span class="text-brand-200/60">Reference #</span>
-              <span id="submit-ref" class="font-mono font-semibold">—</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-brand-200/60">Status</span>
-              <span class="text-success font-semibold">Received ✓</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-brand-200/60">Submitted</span>
-              <span id="submit-date" class="font-semibold">—</span>
+        <!-- Success Confirmation -->
+        <div id="submit-success-wrap" class="hidden w-full text-center">
+          <div class="animate-pop-in">
+            <div class="w-20 h-20 mx-auto rounded-full bg-success/15 ring-1 ring-success/30 flex items-center justify-center mb-5">
+              <svg class="w-10 h-10 text-success" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
             </div>
           </div>
+
+          <h2 class="text-2xl font-bold mb-1 animate-slide-up">Report Submitted</h2>
+          <p class="text-white/50 text-sm mb-1 animate-slide-up">Record successfully packaged and submitted to</p>
+          <p class="font-bold text-accent text-sm mb-6 animate-slide-up">Baltimore Housing &amp; Community Development</p>
+
+          <div class="stat-card text-left mb-6 animate-slide-up">
+            <div class="space-y-2.5 text-sm">
+              <div class="flex justify-between">
+                <span class="text-white/40">Reference</span>
+                <span id="submit-ref" class="font-mono font-bold text-brand-400">--</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-white/40">Status</span>
+                <span class="text-success font-semibold">Received</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-white/40">Material</span>
+                <span id="submit-material" class="font-semibold">--</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-white/40">Timestamp (UTC)</span>
+                <span id="submit-timestamp" class="font-mono text-xs">--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- JSON Payload Preview (collapsed) -->
+          <details class="w-full text-left mb-6">
+            <summary class="text-xs text-white/30 cursor-pointer hover:text-white/50 transition-colors font-medium">View Data Payload</summary>
+            <pre id="submit-payload-json" class="mt-2 text-[10px] text-white/40 bg-white/[0.03] rounded-xl p-4 overflow-x-auto font-mono leading-relaxed ring-1 ring-white/[0.06]"></pre>
+          </details>
+
+          <p class="text-[11px] text-white/25 mb-6">You will receive a follow-up from the city within 5-10 business days.</p>
+
+          <button onclick="LeadLensApp.reset()" class="btn-secondary w-full">
+            Back to Home
+          </button>
         </div>
-        <p class="text-xs text-brand-200/40 mb-6">You will receive a follow-up from the city within 5–10 business days.</p>
-        <button onclick="App.goTo('welcome')" class="btn-secondary w-full">
-          ← Back to Home
-        </button>
+
       </div>
     </div>
   </section>
 
-  <!-- ===== DEMO OVERRIDE MODAL (hidden) ===== -->
-  <div id="override-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center px-6">
-    <div class="bg-brand-900 border border-white/10 rounded-2xl p-6 w-full max-w-xs">
-      <h3 class="font-bold text-lg mb-4 text-center">🔧 Demo Override</h3>
-      <div class="space-y-3">
-        <button onclick="Override.force('galvanized_steel')" class="w-full py-3 rounded-xl bg-danger/20 text-danger font-semibold border border-danger/30 active:scale-95 transition-transform">
-          Force: Galvanized Steel
+  <!-- ================================================================== -->
+  <!--  DEMO OVERRIDE MODAL                                               -->
+  <!-- ================================================================== -->
+  <div id="override-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center px-6">
+    <div class="bg-slate-950 border border-white/10 rounded-2xl p-6 w-full max-w-xs ring-1 ring-white/[0.06] shadow-2xl">
+      <p class="text-[10px] text-white/25 uppercase tracking-widest font-semibold mb-1 text-center">Demo Mode</p>
+      <h3 class="font-bold text-lg mb-5 text-center">Override Material</h3>
+      <div class="space-y-2.5">
+        <button onclick="LeadLensApp.override.force('galvanized_steel')" class="w-full py-3 rounded-xl bg-warn/10 text-warn font-semibold border border-warn/20 active:scale-[0.97] transition-transform text-sm">
+          Galvanized Steel
         </button>
-        <button onclick="Override.force('lead')" class="w-full py-3 rounded-xl bg-warn/20 text-warn font-semibold border border-warn/30 active:scale-95 transition-transform">
-          Force: Lead
+        <button onclick="LeadLensApp.override.force('lead')" class="w-full py-3 rounded-xl bg-danger/10 text-danger font-semibold border border-danger/20 active:scale-[0.97] transition-transform text-sm">
+          Lead
         </button>
-        <button onclick="Override.force('copper')" class="w-full py-3 rounded-xl bg-success/20 text-success font-semibold border border-success/30 active:scale-95 transition-transform">
-          Force: Copper
+        <button onclick="LeadLensApp.override.force('copper')" class="w-full py-3 rounded-xl bg-success/10 text-success font-semibold border border-success/20 active:scale-[0.97] transition-transform text-sm">
+          Copper
         </button>
       </div>
-      <button onclick="Override.close()" class="w-full mt-4 text-sm text-brand-200/60">Cancel</button>
+      <button onclick="LeadLensApp.override.close()" class="w-full mt-4 text-xs text-white/30 hover:text-white/50 transition-colors py-2">Cancel</button>
     </div>
   </div>
 
-  <!-- Scripts (order matters) -->
+  <!-- ================================================================== -->
+  <!--  SCRIPTS — Load order: state machine first, then sensor modules    -->
+  <!-- ================================================================== -->
   <script src="js/app.js"></script>
+  <script src="js/override.js"></script>
+  <script src="js/results.js"></script>
   <script src="js/motion.js"></script>
   <script src="js/camera.js"></script>
-  <script src="js/results.js"></script>
-  <script src="js/override.js"></script>
+
 </body>
 </html>
