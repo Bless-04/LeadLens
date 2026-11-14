@@ -1,31 +1,135 @@
 # LeadLens
 
-**Know Your Pipes. Protect Your Family.**
+> **Know Your Pipes. Protect Your Family.**  
+> *Built for the CodeClash Hackathon — Towson University*
 
-## The Problem
+[![React](https://img.shields.io/badge/React-18.3-blue.svg)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC.svg)](https://tailwindcss.com)
+[![Vite](https://img.shields.io/badge/Vite-6.1-646CFF.svg)](https://vitejs.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Lead poisoning harms millions of people around the world.
+---
 
-Low-income families are often at greater risk.
+## 🎯 Mission
 
-Many families don't know if the pipes bringing water into their homes contain lead.
+Lead poisoning harms millions of families, particularly in older housing and low-income communities. Many families have no idea whether the service line delivering drinking water into their home is made of toxic lead.
 
-## Our Solution
+**LeadLens** is a free, mobile-first web app designed for anyone with a smartphone to identify their water pipe material in 2 minutes using visual inspection and EPA physical test protocols (magnet and coin scratch tests).
 
-LeadLens is a free app that helps people find out if their water pipes might be made of lead.
+---
 
-All you need is your phone.
+## 📱 Features & Screens
 
-## How It Works
+1. **Home Screen**:
+   - Distinctive LeadLens branding and mission statement: *"Know Your Pipes. Protect Your Family."*
+   - CodeClash Hackathon — Towson University badge.
+   - Quick 3-step breakdown of how the test works.
+   - Prominent **"Check My Pipe"** primary button.
+   - **Interactive Demo Mode** quick-selector for judges and offline evaluations.
 
-1. Take a picture of your water pipe.
-2. Follow a few simple steps.
-3. Find out what your pipe might be made of.
+2. **Camera Screen**:
+   - iPhone camera support (`capture="environment"` file input) and standard photo upload.
+   - Built-in live browser viewfinder option.
+   - Helpful guide box explaining where to locate the water intake pipe before the meter.
+   - Curated gallery of verified sample pipe reference photos (Lead, Copper, Galvanized Steel, PVC).
+   - "Skip Photo" option for low-light or quick manual testing.
 
-## Our Mission
+3. **Pipe Check Screen**:
+   - Step-by-step physical verification questions:
+     1. Exterior look & patina (dull grey, penny copper, threaded steel, smooth plastic, painted).
+     2. Magnet Test (refrigerator/tool magnet sticks firmly vs falls off).
+     3. Scratch Test (soft shiny silver nickel vs bright penny copper vs hard dull grey metal).
+     4. Property age context (pre-1986 vs post-1986 lead ban).
 
-Help every family protect their health, no matter how much money they make.
+4. **Results Screen**:
+   - Material classification (Lead, Copper, Galvanized Steel, Plastic, or Inconclusive).
+   - High-visibility risk badges (High Risk, Moderate Risk, Low Risk).
+   - Plain-language explanation of why the material was identified.
+   - **Immediate Safe Drinking Steps**: Cold water flushing, avoiding boiling for lead removal, cleaning faucet aerators.
+   - **Certified Filter Guidance**: Explaining NSF/ANSI 53/58 requirements vs NSF 42 (taste-only).
+   - **Water Utility Next Steps**: How to access Bipartisan Infrastructure Law grant programs and EPA Lead and Copper Rule replacement initiatives.
+   - Native share action to spread awareness to neighbors.
 
-## Built At
+5. **Learn Screen (Safety & Lab Testing Guide)**:
+   - Deep dive into why lead is hazardous to infant and child brain development.
+   - Step-by-step instructions on requesting free or certified lab water testing kits.
+   - EPA Safe Drinking Water Hotline direct connection (`1-800-426-4791`).
+   - Interactive FAQ accordion for common misconceptions (boiling water, bathing safety, hot vs cold tap).
 
-CodeClash Hackathon — Towson University
+6. **Interactive Demo Mode**:
+   - Realistic pre-configured scenarios (1920s Historic Lead, 1970s Copper, 1950s Galvanized Steel, 2016 PVC).
+   - Prominent **DEMO MODE RESULT** banners to ensure transparent distinction between simulation and real-world results.
+
+---
+
+## ⚠️ Important Safety Guarantees
+
+- **No False Claims**: The camera inspects pipe material; it **cannot** measure dissolved lead in drinking water.
+- **No Faked AI / Magnetometer Readings**: We never synthesize fake hardware sensors. Physical magnet and scratch tests are honest and EPA-aligned.
+- **Lab Testing Required**: LeadLens clearly states that only an EPA-certified laboratory test can verify tap water safety.
+
+---
+
+## 🏗️ Architecture & Codex Extension Module
+
+The pipe analysis logic is decoupled into a dedicated service:
+`src/services/pipeAnalysis.ts`
+
+```
+LeadLens/
+├── src/
+│   ├── components/       # UI Components (Navbar, BottomNav, DisclaimerBanner, DemoModal)
+│   ├── data/             # Demo scenarios & sample pipe SVG illustrations
+│   ├── screens/          # Core screens (Home, Camera, PipeCheck, Results, Learn)
+│   ├── services/
+│   │   └── pipeAnalysis.ts  # Decoupled pipe material analysis engine & Codex vision hook
+│   ├── types/            # TypeScript data contracts & interfaces
+│   ├── App.tsx           # Mobile shell, state management & view routing
+│   ├── main.tsx          # React application entry point
+│   └── index.css         # Tailwind & iOS Safari safe-area styling
+```
+
+Future AI contributors (or Codex) can plug deep-learning vision models directly into the `analyzePipeVision()` function in `src/services/pipeAnalysis.ts` without modifying UI components.
+
+---
+
+## 🚀 Getting Started Locally
+
+### Prerequisites
+- Node.js (v18 or higher recommended)
+- npm
+
+### Installation & Launch
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/chiefbumi/LeadLens.git
+   cd LeadLens
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Open in your browser**:
+   Navigate to [http://localhost:5173](http://localhost:5173).  
+   *Tip for mobile testing*: Open browser DevTools (`F12`), toggle Device Emulation (`Ctrl+Shift+M` or `Cmd+Shift+M`), and select **iPhone 14 / Safari**.
+
+5. **Build for production**:
+   ```bash
+   npm run build
+   ```
+
+---
+
+## 👥 Hackathon Team & Acknowledgements
+
+Created for the **Towson University CodeClash Hackathon**.  
+Dedicated to public health, environmental justice, and safe drinking water for every family.
