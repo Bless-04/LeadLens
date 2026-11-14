@@ -17,6 +17,7 @@ import {
 import { PipeAnalysisResult } from '../types/pipe';
 import { InspectionLocationCard } from '../components/InspectionLocationCard';
 import { PhotoAnalysisCard } from '../components/PhotoAnalysisCard';
+import { PipeModelCard } from '../components/3d/PipeModelCard';
 
 interface ResultsScreenProps {
   result: PipeAnalysisResult;
@@ -183,6 +184,8 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
           {result.disclaimer}
         </p>
       </div>
+
+      <PipeModelCard resultMaterial={result.material} />
 
       {/* Immediate Safe Action Steps */}
       <section className="bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-xs space-y-3">

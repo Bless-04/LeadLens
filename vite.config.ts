@@ -3,18 +3,29 @@ import { defineConfig, loadEnv, type Plugin, type PreviewServer, type ViteDevSer
 import react from '@vitejs/plugin-react';
 import analyzePhoto from './api/analyze-photo';
 import reverseGeocode from './api/reverse-geocode';
+import addressSuggestions from './api/address-suggestions';
 
 function localFunctions(): Plugin {
+  const routes = new Map([
+    ['/api/analyze-photo', analyzePhoto],
+    ['/api/reverse-geocode', reverseGeocode],
+    ['/api/address-suggestions', addressSuggestions],
+  ]);
+  return {
+    name: 'leadlens-local-functions',
+    configureServer: serveFunctions,
+    configurePreviewServer: serveFunctions,
+  };
+
   function serveFunctions(server: ViteDevServer | PreviewServer) {
-    const env = loadEnv(server.config.mode, server.config.envDir, ['GEMINI_', 'NOMINATIM_', 'UPSTASH_']);
+    const env = loadEnv(server.config.mode, server.config.envDir, ['GEMINI_', 'NOMINATIM_', 'UPSTASH_', 'GEOAPIFY_']);
     for (const [name, value] of Object.entries(env)) {
       process.env[name] ??= value;
     }
     // Vercel serves these same handlers from /api in deployed environments.
     server.middlewares.use(async (incoming, outgoing, next) => {
       const url = new URL(incoming.url ?? '/', 'http://localhost');
-      const handler = url.pathname === '/api/analyze-photo' ? analyzePhoto
-        : url.pathname === '/api/reverse-geocode' ? reverseGeocode : undefined;
+      const handler = routes.get(url.pathname);
       if (!handler) return next();
 
       try {
@@ -36,12 +47,6 @@ function localFunctions(): Plugin {
       }
     });
   }
-
-  return {
-    name: 'leadlens-local-functions',
-    configureServer: serveFunctions,
-    configurePreviewServer: serveFunctions,
-  };
 }
 
 export default defineConfig({
