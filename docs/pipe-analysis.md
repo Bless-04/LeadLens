@@ -1,8 +1,7 @@
 # Pipe analysis frontend interface
 
-This checkout currently has no React/Vite application. The module in
-`src/pipe-analysis` is plain TypeScript with no runtime dependencies and can be
-imported directly by a future React/Vite app. No frontend design files were added.
+The module in `src/pipe-analysis` is plain TypeScript with no runtime
+dependencies and can be imported directly by the React/Vite frontend.
 
 ## Run checks
 
@@ -17,8 +16,8 @@ npm test
 In the managed cloud environment, npm's default home cache may be unwritable.
 Use `npm ci --cache /tmp/leadlens-npm-cache` there instead of `npm ci`.
 
-`npm run test:watch` runs the unit tests during development. There is no app build
-or dev server yet; these commands validate the analysis module.
+`npm run test:watch` runs the unit tests during development. These commands validate the analysis module. Use `npm run check` to also
+validate the frontend production build; see [CI/CD](ci-cd.md).
 
 ## Call from React
 
