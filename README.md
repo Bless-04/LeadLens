@@ -11,29 +11,29 @@
 
 ---
 
-## 🎯 Mission
+## 🎯 The Problem & Our Mission
 
-Lead poisoning harms millions of families, particularly in older housing and low-income communities. Many families have no idea whether the service line delivering drinking water into their home is made of toxic lead.
+Lead poisoning harms millions of people around the world. Low-income families and older neighborhoods are often at greater risk. Many families don't know if the service line bringing drinking water into their homes is made of toxic lead.
 
-**LeadLens** is a free, mobile-first web app designed for anyone with a smartphone to identify their water pipe material in 2 minutes using visual inspection and EPA physical test protocols (magnet and coin scratch tests).
+**LeadLens** is a free, mobile-first web app that helps families determine whether their water pipes might be made of lead. All you need is your phone and a 2-minute physical inspection (scratch and magnet tests based on EPA guidelines).
 
 ---
 
 ## 📱 Features & Screens
 
 1. **Home Screen**:
-   - Distinctive LeadLens branding and mission statement: *"Know Your Pipes. Protect Your Family."*
+   - Distinctive LeadLens branding and slogan: *"Know Your Pipes. Protect Your Family."*
    - CodeClash Hackathon — Towson University badge.
-   - Quick 3-step breakdown of how the test works.
+   - Quick 3-step explanation of how the test works.
    - Prominent **"Check My Pipe"** primary button.
    - **Interactive Demo Mode** quick-selector for judges and offline evaluations.
 
 2. **Camera Screen**:
    - iPhone camera support (`capture="environment"` file input) and standard photo upload.
    - Built-in live browser viewfinder option.
-   - Helpful guide box explaining where to locate the water intake pipe before the meter.
+   - Clear guide box explaining where to locate the water intake pipe before the meter.
    - Curated gallery of verified sample pipe reference photos (Lead, Copper, Galvanized Steel, PVC).
-   - "Skip Photo" option for low-light or quick manual testing.
+   - "Skip Photo" option for low-light or direct manual testing.
 
 3. **Pipe Check Screen**:
    - Step-by-step physical verification questions:
@@ -71,26 +71,28 @@ Lead poisoning harms millions of families, particularly in older housing and low
 
 ---
 
-## 🏗️ Architecture & Codex Extension Module
+## 🏗️ Architecture & Pipe Analysis Engine
 
-The pipe analysis logic is decoupled into a dedicated service:
-`src/services/pipeAnalysis.ts`
+The repository includes both the mobile-first React frontend and the rule-based classification modules:
 
 ```
 LeadLens/
+├── docs/                 # Documentation (pipe-analysis.md)
 ├── src/
+│   ├── pipe-analysis/    # Rule-based pipe classifier & Vitest unit tests
+│   │   ├── analyzePipe.ts
+│   │   ├── analyzePipe.test.ts
+│   │   ├── demo.ts
+│   │   └── types.ts
 │   ├── components/       # UI Components (Navbar, BottomNav, DisclaimerBanner, DemoModal)
 │   ├── data/             # Demo scenarios & sample pipe SVG illustrations
 │   ├── screens/          # Core screens (Home, Camera, PipeCheck, Results, Learn)
-│   ├── services/
-│   │   └── pipeAnalysis.ts  # Decoupled pipe material analysis engine & Codex vision hook
-│   ├── types/            # TypeScript data contracts & interfaces
+│   ├── services/         # Decoupled pipe material analysis engine & Codex vision hook
+│   ├── types/            # Frontend TypeScript data models
 │   ├── App.tsx           # Mobile shell, state management & view routing
 │   ├── main.tsx          # React application entry point
 │   └── index.css         # Tailwind & iOS Safari safe-area styling
 ```
-
-Future AI contributors (or Codex) can plug deep-learning vision models directly into the `analyzePipeVision()` function in `src/services/pipeAnalysis.ts` without modifying UI components.
 
 ---
 
@@ -122,7 +124,12 @@ Future AI contributors (or Codex) can plug deep-learning vision models directly 
    Navigate to [http://localhost:5173](http://localhost:5173).  
    *Tip for mobile testing*: Open browser DevTools (`F12`), toggle Device Emulation (`Ctrl+Shift+M` or `Cmd+Shift+M`), and select **iPhone 14 / Safari**.
 
-5. **Build for production**:
+5. **Run tests**:
+   ```bash
+   npm test
+   ```
+
+6. **Build for production**:
    ```bash
    npm run build
    ```
