@@ -1,0 +1,95 @@
+/* ===== LeadLens Custom Styles ===== */
+
+/* Screen transitions */
+.screen {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.screen.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* Primary CTA button */
+.btn-primary {
+  @apply py-4 px-6 rounded-2xl bg-gradient-to-r from-brand-500 to-cyan-500 
+         text-white font-semibold text-base shadow-lg shadow-brand-500/25 
+         active:scale-95 transition-transform duration-150;
+}
+
+/* Secondary / Ghost button */
+.btn-secondary {
+  @apply py-3 px-6 rounded-2xl bg-white/5 border border-white/10 
+         text-brand-200 font-medium text-sm 
+         active:scale-95 transition-transform duration-150;
+}
+
+/* Info Cards */
+.card {
+  @apply bg-white/5 border border-white/10 rounded-2xl p-4;
+}
+
+/* Input Fields */
+.input-field {
+  @apply w-full py-3 px-4 rounded-xl bg-white/10 border border-white/10 
+         text-white placeholder-brand-200/40 text-sm 
+         focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500
+         transition-colors;
+}
+
+/* Tap ring animations */
+.tap-ring-spike {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.4), 0 0 60px rgba(239, 68, 68, 0.2);
+  transform: scale(1.1);
+}
+
+.tap-ring-active {
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+/* Pulse animation for waiting states */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Success checkmark entry */
+@keyframes pop-in {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop-in {
+  animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Result card slide up */
+@keyframes slide-up {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out forwards;
+}
+
+/* Haptic visual feedback flash */
+@keyframes flash-white {
+  0% { background-color: rgba(255, 255, 255, 0.15); }
+  100% { background-color: transparent; }
+}
+.flash {
+  animation: flash-white 0.2s ease-out;
+}
+
+/* Safe-area padding for notched devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

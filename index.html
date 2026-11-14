@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0f172a">
+  <title>LeadLens — Know Your Pipes</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#0f172a',
+            },
+            danger:  '#ef4444',
+            success: '#22c55e',
+            warn:    '#f59e0b',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-brand-900 text-white font-sans min-h-screen overflow-x-hidden">
+
+  <!-- ===== SCREEN 0: SPLASH / WELCOME ===== -->
+  <section id="screen-welcome" class="screen active flex flex-col items-center justify-center min-h-screen px-6 text-center">
+    <div id="logo-tap-target" class="mb-6">
+      <div class="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-brand-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-brand-500/30">
+        <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11 8v6M8 11h6"/>
+        </svg>
+      </div>
+    </div>
+    <h1 class="text-4xl font-extrabold tracking-tight mb-2">Lead<span class="text-cyan-400">Lens</span></h1>
+    <p class="text-brand-200 text-lg mb-1">Know Your Pipes. Protect Your Family.</p>
+    <p class="text-brand-200/60 text-sm mb-8">Free water service line identification — just your phone.</p>
+    <button onclick="App.goTo('info')" class="btn-primary w-full max-w-xs">
+      Get Started
+    </button>
+    <p class="text-xs text-brand-200/40 mt-6">No sign-up required · Works on any smartphone</p>
+  </section>
+
+  <!-- ===== SCREEN 1: SAFETY INFO & PIPE GUIDE ===== -->
+  <section id="screen-info" class="screen flex flex-col min-h-screen px-6 py-10">
+    <button onclick="App.goTo('welcome')" class="self-start text-brand-200/60 text-sm mb-4">← Back</button>
+    <h2 class="text-2xl font-bold mb-4">Before You Start</h2>
+
+    <div class="space-y-4 flex-1">
+      <div class="card">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">📍</span>
+          <div>
+            <h3 class="font-semibold mb-1">Find Your Water Service Line</h3>
+            <p class="text-sm text-brand-200/80">Look where the main water pipe enters your home — usually in the basement, crawl space, or utility closet near the water meter.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">🔦</span>
+          <div>
+            <h3 class="font-semibold mb-1">Good Lighting</h3>
+            <p class="text-sm text-brand-200/80">Make sure the area is well-lit. We'll need to see the pipe's color and texture clearly.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">🧤</span>
+          <div>
+            <h3 class="font-semibold mb-1">Safety First</h3>
+            <p class="text-sm text-brand-200/80">Avoid scratching or disturbing old pipes. LeadLens uses non-invasive phone sensors only.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-cyan-500/10 border-cyan-500/30">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">📱</span>
+          <div>
+            <h3 class="font-semibold mb-1">How It Works</h3>
+            <ol class="text-sm text-brand-200/80 list-decimal list-inside space-y-1 mt-1">
+              <li><strong>Tap Test</strong> — Firmly tap your phone against the pipe to check if it's magnetic (steel).</li>
+              <li><strong>Camera Scan</strong> — If non-magnetic, snap a photo for color analysis (lead vs. copper).</li>
+              <li><strong>Instant Result</strong> — Get your pipe material and submit to the city.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button onclick="App.goTo('tap-test')" class="btn-primary w-full mt-6">
+      I Found My Pipe — Start Test →
+    </button>
+  </section>
+
+  <!-- ===== SCREEN 2: TAP TEST (Motion Sensor) ===== -->
+  <section id="screen-tap-test" class="screen flex flex-col items-center justify-center min-h-screen px-6 text-center">
+    <button onclick="App.goTo('info')" class="self-start text-brand-200/60 text-sm mb-4 text-left w-full">← Back</button>
+    <div class="flex-1 flex flex-col items-center justify-center w-full">
+      <p class="text-sm text-brand-200/60 uppercase tracking-widest mb-2">Step 1 of 2</p>
+      <h2 class="text-2xl font-bold mb-2">Tap Test</h2>
+      <p class="text-brand-200/80 mb-8 max-w-xs">Hold your phone firmly and <strong>tap it against the pipe</strong>. We'll detect if the metal is magnetic.</p>
+
+      <!-- Impact Visualizer Ring -->
+      <div id="tap-ring" class="w-44 h-44 rounded-full border-4 border-brand-500/40 flex items-center justify-center mb-6 transition-all duration-200">
+        <div class="text-center">
+          <p id="tap-accel" class="text-4xl font-bold tabular-nums">0.0</p>
+          <p class="text-xs text-brand-200/60 mt-1">m/s²</p>
+        </div>
+      </div>
+
+      <p id="tap-status" class="text-sm text-brand-200/60 mb-4 h-6">Waiting for tap…</p>
+
+      <!-- Threshold Bar -->
+      <div class="w-full max-w-xs mb-8">
+        <div class="flex justify-between text-xs text-brand-200/40 mb-1">
+          <span>0</span>
+          <span>Threshold: 11.5</span>
+          <span>30+</span>
+        </div>
+        <div class="h-3 bg-white/10 rounded-full overflow-hidden">
+          <div id="tap-bar" class="h-full bg-brand-500 rounded-full transition-all duration-100" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <button id="btn-tap-start" onclick="Motion.startListening()" class="btn-primary w-full max-w-xs">
+        Enable Motion Sensor
+      </button>
+      <button id="btn-not-magnetic" onclick="App.goTo('camera')" class="btn-secondary w-full max-w-xs mt-3 hidden">
+        No Spike Detected — Use Camera Instead →
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 3: CAMERA SCAN ===== -->
+  <section id="screen-camera" class="screen flex flex-col min-h-screen px-6 py-10">
+    <button onclick="App.goTo('tap-test')" class="self-start text-brand-200/60 text-sm mb-4">← Back</button>
+    <p class="text-sm text-brand-200/60 uppercase tracking-widest mb-2 text-center">Step 2 of 2</p>
+    <h2 class="text-2xl font-bold mb-2 text-center">Camera Scan</h2>
+    <p class="text-brand-200/80 mb-6 text-center text-sm">Point your camera at the exposed pipe surface. We'll analyze the color to determine the material.</p>
+
+    <!-- Camera Viewfinder -->
+    <div id="camera-container" class="relative w-full aspect-[3/4] bg-black rounded-2xl overflow-hidden mb-4 mx-auto max-w-sm">
+      <video id="camera-feed" autoplay playsinline muted class="w-full h-full object-cover"></video>
+      <!-- Crosshair overlay -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div class="w-32 h-32 border-2 border-cyan-400/60 rounded-xl"></div>
+      </div>
+      <!-- Canvas (hidden, for frame capture) -->
+      <canvas id="camera-canvas" class="hidden"></canvas>
+    </div>
+
+    <!-- Color Analysis Bar -->
+    <div id="color-analysis" class="hidden mb-4">
+      <div class="card">
+        <div class="flex items-center gap-3">
+          <div id="color-swatch" class="w-10 h-10 rounded-lg border border-white/20"></div>
+          <div class="flex-1">
+            <p class="text-sm font-semibold">Detected Color</p>
+            <p id="color-values" class="text-xs text-brand-200/60">H: — S: — L: —</p>
+          </div>
+          <span id="color-match" class="text-sm font-semibold px-3 py-1 rounded-full bg-white/10">—</span>
+        </div>
+      </div>
+    </div>
+
+    <button id="btn-camera-start" onclick="Camera.start()" class="btn-primary w-full max-w-sm mx-auto">
+      Open Camera
+    </button>
+    <button id="btn-capture" onclick="Camera.capture()" class="btn-primary w-full max-w-sm mx-auto hidden">
+      📸 Capture & Analyze
+    </button>
+    <button id="btn-camera-confirm" onclick="Camera.confirm()" class="btn-primary w-full max-w-sm mx-auto mt-3 hidden">
+      Confirm Result →
+    </button>
+  </section>
+
+  <!-- ===== SCREEN 4: RESULT ===== -->
+  <section id="screen-result" class="screen flex flex-col items-center min-h-screen px-6 py-10">
+    <div class="flex-1 flex flex-col items-center justify-center w-full max-w-sm">
+
+      <!-- Result Icon -->
+      <div id="result-icon" class="w-28 h-28 rounded-full flex items-center justify-center mb-6 text-5xl">
+        <!-- Populated by JS -->
+      </div>
+
+      <h2 id="result-title" class="text-3xl font-extrabold mb-2 text-center">—</h2>
+      <p id="result-subtitle" class="text-brand-200/80 text-center mb-6">—</p>
+
+      <!-- Detail Card -->
+      <div id="result-card" class="card w-full mb-6">
+        <div class="space-y-3">
+          <div class="flex justify-between text-sm">
+            <span class="text-brand-200/60">Material</span>
+            <span id="result-material" class="font-semibold">—</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-brand-200/60">Magnetic</span>
+            <span id="result-magnetic" class="font-semibold">—</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-brand-200/60">Health Risk</span>
+            <span id="result-risk" class="font-semibold">—</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-brand-200/60">Detection Method</span>
+            <span id="result-method" class="font-semibold">—</span>
+          </div>
+          <hr class="border-white/10">
+          <p id="result-advice" class="text-sm text-brand-200/80">—</p>
+        </div>
+      </div>
+
+      <button onclick="App.goTo('submit')" class="btn-primary w-full">
+        Submit to Baltimore HCD →
+      </button>
+      <button onclick="App.goTo('welcome')" class="btn-secondary w-full mt-3">
+        Start Over
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 5: MOCK CITY SUBMISSION ===== -->
+  <section id="screen-submit" class="screen flex flex-col min-h-screen px-6 py-10">
+    <div class="flex-1 flex flex-col items-center justify-center w-full max-w-sm mx-auto">
+      <!-- Submission Form -->
+      <div id="submit-form" class="w-full">
+        <h2 class="text-2xl font-bold mb-2 text-center">Report Your Results</h2>
+        <p class="text-brand-200/80 text-center text-sm mb-6">Submit your pipe identification to Baltimore Housing & Community Development.</p>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Full Name</label>
+            <input type="text" id="field-name" placeholder="Jane Doe" class="input-field">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Address</label>
+            <input type="text" id="field-address" placeholder="123 N. Charles St, Baltimore MD" class="input-field">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Detected Material</label>
+            <input type="text" id="field-material" readonly class="input-field bg-white/5 cursor-not-allowed">
+          </div>
+          <button onclick="Results.submitReport()" class="btn-primary w-full mt-2">
+            📤 Submit Report
+          </button>
+        </div>
+      </div>
+
+      <!-- Success Confirmation (hidden initially) -->
+      <div id="submit-success" class="hidden w-full text-center">
+        <div class="w-20 h-20 mx-auto rounded-full bg-success/20 flex items-center justify-center mb-4">
+          <svg class="w-10 h-10 text-success" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">Report Submitted!</h2>
+        <p class="text-brand-200/80 text-sm mb-1">Your water service line data has been sent to:</p>
+        <p class="font-semibold text-cyan-400 mb-4">Baltimore Housing & Community Development</p>
+        <div class="card text-left mb-6">
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-brand-200/60">Reference #</span>
+              <span id="submit-ref" class="font-mono font-semibold">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-brand-200/60">Status</span>
+              <span class="text-success font-semibold">Received ✓</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-brand-200/60">Submitted</span>
+              <span id="submit-date" class="font-semibold">—</span>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-brand-200/40 mb-6">You will receive a follow-up from the city within 5–10 business days.</p>
+        <button onclick="App.goTo('welcome')" class="btn-secondary w-full">
+          ← Back to Home
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DEMO OVERRIDE MODAL (hidden) ===== -->
+  <div id="override-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center px-6">
+    <div class="bg-brand-900 border border-white/10 rounded-2xl p-6 w-full max-w-xs">
+      <h3 class="font-bold text-lg mb-4 text-center">🔧 Demo Override</h3>
+      <div class="space-y-3">
+        <button onclick="Override.force('galvanized_steel')" class="w-full py-3 rounded-xl bg-danger/20 text-danger font-semibold border border-danger/30 active:scale-95 transition-transform">
+          Force: Galvanized Steel
+        </button>
+        <button onclick="Override.force('lead')" class="w-full py-3 rounded-xl bg-warn/20 text-warn font-semibold border border-warn/30 active:scale-95 transition-transform">
+          Force: Lead
+        </button>
+        <button onclick="Override.force('copper')" class="w-full py-3 rounded-xl bg-success/20 text-success font-semibold border border-success/30 active:scale-95 transition-transform">
+          Force: Copper
+        </button>
+      </div>
+      <button onclick="Override.close()" class="w-full mt-4 text-sm text-brand-200/60">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Scripts (order matters) -->
+  <script src="js/app.js"></script>
+  <script src="js/motion.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/results.js"></script>
+  <script src="js/override.js"></script>
+</body>
+</html>
