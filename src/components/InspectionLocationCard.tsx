@@ -1,10 +1,11 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useId, useRef, useState } from 'react';
 import { saveInspection, type Coordinates } from '../services/inspections';
 import type { PipeAnalysisResult } from '../types/pipe';
 
 const fieldClass = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm';
 const buttonClass = 'rounded-lg bg-slate-100 px-3 py-2 font-semibold text-slate-900 disabled:opacity-50';
 const InspectionMap = lazy(() => import('./InspectionMap'));
+type AddressSuggestion = Coordinates & { address: string };
 
 interface InspectionLocationCardProps {
   result: PipeAnalysisResult;
@@ -17,27 +18,70 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
   const [showMap, setShowMap] = useState(false);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState('');
+  const [locationError, setLocationError] = useState('');
+  const [addressQuery, setAddressQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
+  const [suggestionMessage, setSuggestionMessage] = useState('');
+  const locationErrorId = useId();
+  const addressInput = useRef<HTMLInputElement>(null);
+  const addressSetPin = useRef(false);
   const lookup = useRef<AbortController | null>(null);
   useEffect(() => () => lookup.current?.abort(), []);
+  useEffect(() => {
+    const query = addressQuery.trim().replace(/\s+/g, ' ');
+    if (!/^\d[A-Z0-9 .'-]{3,59}$/i.test(query) || !/[A-Z]/i.test(query)) return;
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      try {
+        const response = await fetch('/api/address-suggestions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query }),
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error('Address lookup failed');
+        const { suggestions: matches }: { suggestions: AddressSuggestion[] } = await response.json();
+        if (controller.signal.aborted) return;
+        setSuggestions(matches);
+        if (!matches.length) setSuggestionMessage('No Baltimore City matches. You can enter the address manually.');
+      } catch {
+        if (!controller.signal.aborted) setSuggestionMessage('Address suggestions are unavailable. You can enter the address manually.');
+      }
+    }, 350);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [addressQuery]);
+
+  function clearSuggestions() {
+    setAddressQuery('');
+    setSuggestions([]);
+    setSuggestionMessage('');
+  }
 
   function pickLocation(point: Coordinates) {
+    addressSetPin.current = false;
     lookup.current?.abort();
     setPending(false);
     setCoordinates(point);
+    setLocationError('');
     setMessage('Map location selected.');
     setShowMap(false);
   }
 
   async function locate() {
     if (!navigator.geolocation) {
-      setMessage('Location is unavailable. Choose a point on the map.');
+      setLocationError('Location access is unavailable. Open LeadLens over HTTPS in a browser that supports location, or choose a point on the map.');
       return;
     }
+    clearSuggestions();
     lookup.current?.abort();
     const controller = new AbortController();
     lookup.current = controller;
     setPending(true);
     setMessage('');
+    setLocationError('');
     try {
       const point = await new Promise<GeolocationCoordinates>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
@@ -46,6 +90,7 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
       });
       if (controller.signal.aborted) return;
       const location = { latitude: point.latitude, longitude: point.longitude };
+      addressSetPin.current = false;
       setCoordinates(location);
       const response = await fetch('/api/reverse-geocode', {
         method: 'POST',
@@ -61,8 +106,13 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
       }
       setAddress(data.address);
       setMessage('Check that the suggested address is correct before saving.');
-    } catch {
-      if (!controller.signal.aborted) setMessage('Location or address lookup failed. You can enter the address and choose a point on the map.');
+    } catch (error) {
+      if (controller.signal.aborted) return;
+      if (typeof error === 'object' && error !== null && 'code' in error && error.code === 1) {
+        setLocationError('Location access is blocked. In your browser’s site settings, allow Location for LeadLens. If device location is off, turn it on, then tap Use my location again.');
+      } else {
+        setMessage('Location or address lookup failed. You can enter the address and choose a point on the map.');
+      }
     } finally {
       if (!controller.signal.aborted) setPending(false);
     }
@@ -88,15 +138,16 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
   return (
     <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 text-sm">
       <h2 className="font-bold text-slate-900">Add this check to your map</h2>
-      <p className="text-slate-600">Address lookup sends your coordinates to the configured geocoder. Saved pins stay in this browser.</p>
+      <p className="text-slate-600">Location lookup sends your coordinates to the geocoder. Address suggestions use Baltimore City’s address data. Saved pins stay in this browser.</p>
       <div className="flex flex-wrap gap-2">
-        <button type="button" className={buttonClass} onClick={locate} disabled={pending}>
+        <button type="button" className={buttonClass} onClick={locate} disabled={pending} aria-describedby={locationError ? locationErrorId : undefined}>
           {pending ? 'Finding address…' : 'Use my location'}
         </button>
         <button type="button" className={buttonClass} aria-expanded={showMap} onClick={() => setShowMap(!showMap)}>
           {showMap ? 'Close map' : 'Choose point on map'}
         </button>
       </div>
+      {locationError && <p id={locationErrorId} role="alert" className="rounded-lg border border-rose-200 bg-rose-50 p-2.5 text-rose-800">{locationError}</p>}
       {showMap && (
         <>
           <p className="text-slate-600">Tap a point to place the pin. You can also enter latitude and longitude below.</p>
@@ -108,8 +159,45 @@ export function InspectionLocationCard({ result, onSaved }: InspectionLocationCa
       )}
       <label className="block space-y-1 font-medium">
         <span>Street address (optional)</span>
-        <input className={fieldClass} value={address} maxLength={400} onChange={(event) => setAddress(event.target.value)} disabled={pending} />
+        <input
+          ref={addressInput}
+          className={fieldClass}
+          value={address}
+          maxLength={400}
+          autoComplete="off"
+          placeholder="Start with the house number"
+          onChange={(event) => {
+            const value = event.target.value;
+            if (addressSetPin.current) {
+              setCoordinates(undefined);
+              setMessage('');
+              addressSetPin.current = false;
+            }
+            setAddress(value);
+            setAddressQuery(value);
+            setSuggestions([]);
+            setSuggestionMessage('');
+          }}
+          onKeyDown={(event) => { if (event.key === 'Escape') clearSuggestions(); }}
+          disabled={pending}
+        />
       </label>
+      {suggestions.length > 0 && (
+        <ul aria-label="Address suggestions" className="divide-y divide-slate-200 rounded-lg border border-slate-200">
+          {suggestions.map((suggestion) => (
+            <li key={suggestion.address}>
+              <button type="button" className="w-full px-3 py-2 text-left hover:bg-slate-100 focus-visible:bg-slate-100" onClick={() => {
+                setAddress(suggestion.address);
+                pickLocation(suggestion);
+                addressSetPin.current = true;
+                clearSuggestions();
+                addressInput.current?.focus();
+              }}>{suggestion.address}</button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {suggestionMessage && <p role="status" className="text-xs text-slate-600">{suggestionMessage}</p>}
       {coordinates && <p className="text-xs text-slate-600">Pin at {coordinates.latitude.toFixed(5)}, {coordinates.longitude.toFixed(5)}</p>}
       {message && <p role="status" className="text-slate-700">{message}</p>}
       <button type="button" onClick={save} disabled={!coordinates || pending} className="rounded-lg bg-brand-700 px-3 py-2 font-semibold text-white disabled:opacity-50">

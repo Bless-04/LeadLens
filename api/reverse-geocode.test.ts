@@ -6,6 +6,8 @@ describe('reverse-geocode API handler', () => {
 
   beforeEach(() => {
     process.env = { ...originalEnv };
+    delete process.env.UPSTASH_REDIS_REST_URL;
+    delete process.env.UPSTASH_REDIS_REST_TOKEN;
   });
 
   afterEach(() => {
