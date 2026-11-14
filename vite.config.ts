@@ -18,7 +18,7 @@ function localFunctions(): Plugin {
   };
 
   function serveFunctions(server: ViteDevServer | PreviewServer) {
-    const env = loadEnv(server.config.mode, server.config.envDir, ['GEMINI_', 'NOMINATIM_', 'UPSTASH_']);
+    const env = loadEnv(server.config.mode, server.config.envDir, ['GEMINI_', 'NOMINATIM_', 'UPSTASH_', 'GEOAPIFY_']);
     for (const [name, value] of Object.entries(env)) {
       process.env[name] ??= value;
     }
