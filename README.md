@@ -134,11 +134,14 @@ LeadLens/
    npm run build
    ```
 
+   Run `npm run preview` to serve the fresh build at [http://localhost:4173](http://localhost:4173).
+   Both local commands start the React app from the root `index.html`.
+
 ---
 
 ## Baltimore map and Vercel Functions
 
-Copy `.env.example` to `.env` for local development. `npm run dev` serves the same two handlers that Vercel runs from the root `api/` directory. Set the matching variables in the Vercel project settings for Preview and Production. Keep the Gemini and Redis credentials server-side.
+Copy `.env.example` to `.env` for local development. `npm run dev` and `npm run preview` serve the same two handlers that Vercel runs from the root `api/` directory. Set the matching variables in the Vercel project settings for Preview and Production. Keep the Gemini and Redis credentials server-side.
 
 - `GEMINI_API_KEY` enables photo assessment. `GEMINI_MODEL` overrides the default model. The uploaded image is resized and re-encoded in the browser, then sent to Gemini only when the user requests an assessment. The physical check determines the inspection pin's material and risk.
 - `NOMINATIM_REVERSE_URL` and `NOMINATIM_USER_AGENT` configure optional GPS address lookup. Use a provider appropriate for home addresses and your expected traffic. For demonstrations with nonconfidential test coordinates, the public OSM endpoint is opt-in and requires shared Redis credentials for caching and throttling. Its policy limits the entire app to one request per second. [Public Nominatim usage policy](https://operations.osmfoundation.org/policies/nominatim/)

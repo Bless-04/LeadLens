@@ -12,11 +12,9 @@ npm run check
 ```
 
 This executes the TypeScript check, all Vitest tests, and the production Vite
-build in order. The build copies the current entry page's classic JavaScript
-files into `dist/js`; Vite processes its CSS. This preserves the team's static
-frontend without changing its design. React components remain type-checked too.
-Any failure fails the job. Tests are not allowed to pass with
-zero tests. A successful build is retained as the `leadlens-dist` Actions artifact
+build in order. Vite builds the React app from the root `index.html` and writes
+it to `dist`. Any failure fails the job. The suite must contain at least one
+test. A successful build is retained as the `leadlens-dist` Actions artifact
 for seven days. Superseded runs for the same branch are canceled. The workflow
 has read-only repository permissions and needs no secrets.
 
