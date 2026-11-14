@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronRight, ArrowLeft, Calendar, Sparkles } from 'lucide-react';
 import { PipeCheckAnswers, PipeExteriorColor, MagnetResponse, ScratchColorResponse } from '../types/pipe';
 import { DisclaimerBanner } from '../components/DisclaimerBanner';
+import { MagneticFieldReading } from '../components/MagneticFieldReading';
 
 interface PipeCheckScreenProps {
   initialAnswers?: Partial<PipeCheckAnswers>;
@@ -19,16 +20,16 @@ export const PipeCheckScreen: React.FC<PipeCheckScreenProps> = ({
   onBack,
 }) => {
   const [exteriorColor, setExteriorColor] = useState<PipeExteriorColor>(
-    initialAnswers.exteriorColor || 'dull_grey'
+    initialAnswers.exteriorColor || 'painted_or_unsure'
   );
   const [magnetSticks, setMagnetSticks] = useState<MagnetResponse>(
-    initialAnswers.magnetSticks || 'does_not_stick'
+    initialAnswers.magnetSticks || 'not_tested'
   );
   const [scratchResult, setScratchResult] = useState<ScratchColorResponse>(
-    initialAnswers.scratchResult || 'shiny_silver'
+    initialAnswers.scratchResult || 'not_tested'
   );
   const [homeBuiltBefore1986, setHomeBuiltBefore1986] = useState<boolean | 'unsure'>(
-    initialAnswers.homeBuiltBefore1986 !== undefined ? initialAnswers.homeBuiltBefore1986 : true
+    initialAnswers.homeBuiltBefore1986 ?? 'unsure'
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -85,7 +86,7 @@ export const PipeCheckScreen: React.FC<PipeCheckScreenProps> = ({
           />
           <div className="text-xs">
             <p className="font-bold text-slate-800">Photo Attached</p>
-            <p className="text-slate-500">Using photo alongside your physical test answers below.</p>
+            <p className="text-slate-500">You can request an AI photo assessment after the physical check.</p>
           </div>
         </div>
       )}
@@ -226,6 +227,8 @@ export const PipeCheckScreen: React.FC<PipeCheckScreenProps> = ({
           ))}
         </div>
       </div>
+
+      {!isDemo && <MagneticFieldReading />}
 
       {/* QUESTION 3: Scratch Test */}
       <div className="bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-xs space-y-3">

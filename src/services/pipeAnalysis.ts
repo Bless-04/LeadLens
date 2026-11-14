@@ -10,31 +10,7 @@ import { PipeCheckAnswers, PipeAnalysisResult, PipeMaterial } from '../types/pip
  * 1. Physical inspection identifies pipe material, NOT dissolved lead in water.
  * 2. Visual inspection alone CANNOT declare water safe.
  * 3. Never fake sensor readings or AI confidence.
- * 4. This module is decoupled so future ML/Codex computer vision models
- *    can be plugged into `analyzePipeVision()` without altering app logic.
  */
-
-export interface VisionModelInference {
-  suggestedMaterial?: PipeMaterial;
-  confidenceScore?: number;
-  detectedFeatures?: string[];
-  note: string;
-}
-
-/**
- * Extension hook for Codex or future computer vision model implementation.
- * Currently returns transparent placeholder explaining vision capabilities.
- */
-export async function analyzePipeVision(
-  _imageSource: string | File
-): Promise<VisionModelInference> {
-  // Plug-in point for Codex: insert TensorFlow.js / ONNX or Vision API here.
-  // For safety and transparency, we explicitly inform the user that vision
-  // aids feature detection, but the scratch & magnet tests provide ground truth.
-  return {
-    note: 'Visual pre-screen: Computer vision hook ready. Material determination is verified via physical magnet and scratch tests.',
-  };
-}
 
 /**
  * Core Rule Engine for Pipe Material Identification
