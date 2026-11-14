@@ -29,3 +29,18 @@ Help every family protect their health, no matter how much money they make.
 ## Built At
 
 CodeClash Hackathon — Towson University
+
+## Pipe identification logic
+
+The TypeScript rule-based classifier and unit tests are in `src/pipe-analysis`.
+There is no React/Vite frontend in this checkout yet. Photos are accepted for
+integration but are not analyzed; results use manually reported observations.
+All results require confirmation and do not establish drinking-water safety.
+
+```sh
+npm ci
+npm run typecheck
+npm test
+```
+
+See [frontend integration and demo usage](docs/pipe-analysis.md).
