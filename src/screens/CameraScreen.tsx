@@ -3,6 +3,9 @@ import { Camera, ArrowRight, RefreshCw, AlertCircle, Image as ImageIcon, CheckCi
 import { DisclaimerBanner } from '../components/DisclaimerBanner';
 import { SAMPLE_PIPE_SCENARIOS } from '../data/demoScenarios';
 
+const CAMERA_ERROR =
+  'Unable to access camera directly. Please tap "Take Photo or Upload" below to use your device camera.';
+
 interface CameraScreenProps {
   onPhotoSelected: (photoUrl: string) => void;
   onSkipPhoto: () => void;
@@ -16,59 +19,74 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
 }) => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [isCameraStarting, setIsCameraStarting] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
+  const cameraRequestRef = useRef<AbortController | null>(null);
 
-  // Stop camera stream cleanly when unmounting
-  useEffect(() => {
-    return () => {
-      stopCameraStream();
-    };
+  const releaseCamera = React.useCallback(() => {
+    cameraRequestRef.current?.abort();
+    cameraRequestRef.current = null;
+    mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
+    mediaStreamRef.current = null;
   }, []);
 
-  const stopCameraStream = () => {
-    if (mediaStreamRef.current) {
-      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-      mediaStreamRef.current = null;
+  useEffect(() => releaseCamera, [releaseCamera]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (isCameraActive && video) {
+      video.srcObject = mediaStreamRef.current;
     }
+  }, [isCameraActive]);
+
+  const stopCameraStream = () => {
+    releaseCamera();
     setIsCameraActive(false);
+    setIsCameraStarting(false);
+    setIsVideoReady(false);
   };
 
   const startLiveCamera = async () => {
+    if (cameraRequestRef.current || mediaStreamRef.current) return;
+
+    const request = new AbortController();
+    cameraRequestRef.current = request;
+    setIsCameraStarting(true);
     setCameraError(null);
     try {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error('Camera access is not supported by your browser. Please use file upload.');
-      }
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: 'environment' } },
         audio: false,
       });
-      mediaStreamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
+      if (request.signal.aborted) {
+        stream.getTracks().forEach((track) => track.stop());
+        return;
       }
+      mediaStreamRef.current = stream;
       setIsCameraActive(true);
-    } catch (err: unknown) {
-      console.warn('Live camera error:', err);
-      setCameraError(
-        'Unable to access camera directly. Please tap "Take Photo or Upload" below to use your device camera.'
-      );
-      setIsCameraActive(false);
+    } catch {
+      if (!request.signal.aborted) setCameraError(CAMERA_ERROR);
+    } finally {
+      if (!request.signal.aborted) {
+        cameraRequestRef.current = null;
+        setIsCameraStarting(false);
+      }
     }
   };
 
   const captureFromVideo = () => {
-    if (!videoRef.current) return;
+    const video = videoRef.current;
+    if (!video || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
     const canvas = document.createElement('canvas');
-    canvas.width = videoRef.current.videoWidth || 640;
-    canvas.height = videoRef.current.videoHeight || 480;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
       setPhotoPreview(dataUrl);
       stopCameraStream();
@@ -161,8 +179,14 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
           <div className="relative w-full h-full">
             <video
               ref={videoRef}
+              autoPlay
               playsInline
               muted
+              onLoadedData={() => setIsVideoReady(true)}
+              onError={() => {
+                stopCameraStream();
+                setCameraError(CAMERA_ERROR);
+              }}
               className="w-full h-full object-cover"
             />
             {/* Reticle Overlay */}
@@ -175,7 +199,8 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
             <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-4">
               <button
                 onClick={captureFromVideo}
-                className="w-16 h-16 rounded-full bg-white border-4 border-brand-500 shadow-xl flex items-center justify-center active:scale-95 transition-transform"
+                disabled={!isVideoReady}
+                className="w-16 h-16 rounded-full bg-white border-4 border-brand-500 shadow-xl flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50"
                 aria-label="Capture Photo"
               >
                 <div className="w-11 h-11 rounded-full bg-brand-600" />
@@ -236,10 +261,11 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
 
           <button
             onClick={startLiveCamera}
-            className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-sm py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors border border-slate-200"
+            disabled={isCameraStarting || isCameraActive}
+            className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-sm py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors border border-slate-200 disabled:opacity-50"
           >
             <Camera className="w-4 h-4 text-slate-600" />
-            <span>Open Browser Live Viewfinder</span>
+            <span>{isCameraStarting ? 'Opening camera…' : 'Open Browser Live Viewfinder'}</span>
           </button>
         </div>
       )}
