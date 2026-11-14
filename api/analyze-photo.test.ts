@@ -57,7 +57,7 @@ describe('analyze-photo API handler', () => {
     expect(body.error).toContain('valid JPEG');
   });
 
-  it('parses valid Gemini API response', async () => {
+  it('retries temporary Gemini overload and parses the recovered response', async () => {
     process.env.GEMINI_API_KEY = 'test-key';
     const mockGeminiResponse = {
       candidates: [
@@ -77,7 +77,9 @@ describe('analyze-photo API handler', () => {
       ],
     };
 
-    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+    const fetchGemini = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(null, { status: 503 }))
+      .mockResolvedValueOnce(
       new Response(JSON.stringify(mockGeminiResponse), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -92,10 +94,26 @@ describe('analyze-photo API handler', () => {
     });
 
     const response = await handler.fetch(request);
+    expect(fetchGemini).toHaveBeenCalledTimes(2);
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.material).toBe('lead');
     expect(body.confidence).toBe(0.85);
     expect(body.reasoning).toContain('Dull gray');
+  });
+
+  it('reports quota failures without retrying', async () => {
+    process.env.GEMINI_API_KEY = 'test-key';
+    const fetchGemini = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(null, { status: 429, headers: { 'Retry-After': '30' } }),
+    );
+    const response = await handler.fetch(new Request('http://localhost/api/analyze-photo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: '/9j/4AAQSkZJRg==' }),
+    }));
+    expect(response.status).toBe(429);
+    expect(response.headers.get('Retry-After')).toBe('30');
+    expect(fetchGemini).toHaveBeenCalledTimes(1);
   });
 });
