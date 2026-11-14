@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { BottomNav } from './components/BottomNav';
 import { DemoModal } from './components/DemoModal';
@@ -7,10 +7,10 @@ import { CameraScreen } from './screens/CameraScreen';
 import { PipeCheckScreen } from './screens/PipeCheckScreen';
 import { ResultsScreen } from './screens/ResultsScreen';
 import { LearnScreen } from './screens/LearnScreen';
-import { PipeCheckAnswers, PipeAnalysisResult, DemoScenario } from './types/pipe';
+import { PipeCheckAnswers, PipeAnalysisResult, DemoScenario, ScreenType } from './types/pipe';
 import { analyzePipe } from './services/pipeAnalysis';
 
-type ScreenType = 'home' | 'camera' | 'check' | 'results' | 'learn';
+const MapScreen = lazy(() => import('./screens/MapScreen'));
 
 export const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
@@ -42,6 +42,7 @@ export const App: React.FC = () => {
 
   const handleSkipPhoto = () => {
     setPipePhotoUrl(undefined);
+    setAnswers((prev) => ({ ...prev, pipePhotoUrl: undefined }));
     setCurrentScreen('check');
   };
 
@@ -128,18 +129,25 @@ export const App: React.FC = () => {
         {currentScreen === 'results' && analysisResult && (
           <ResultsScreen
             result={analysisResult}
+            photoUrl={pipePhotoUrl}
             onRetest={handleRetest}
             onNavigateToLearn={() => setCurrentScreen('learn')}
+            onOpenMap={() => setCurrentScreen('map')}
           />
         )}
 
         {currentScreen === 'learn' && <LearnScreen />}
+        {currentScreen === 'map' && (
+          <Suspense fallback={<p role="status">Loading map…</p>}>
+            <MapScreen />
+          </Suspense>
+        )}
       </main>
 
       {/* Bottom Navigation */}
       <BottomNav
         currentScreen={currentScreen}
-        onNavigate={(screen) => setCurrentScreen(screen)}
+        onNavigate={(screen) => screen === 'camera' ? handleStartCheck() : setCurrentScreen(screen)}
         onOpenDemoPicker={() => setIsDemoModalOpen(true)}
       />
 

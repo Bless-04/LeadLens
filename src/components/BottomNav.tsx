@@ -1,9 +1,10 @@
 import React from 'react';
-import { Home, Camera, BookOpen, Sparkles } from 'lucide-react';
+import { Home, Camera, BookOpen, MapPin, Sparkles } from 'lucide-react';
+import type { ScreenType } from '../types/pipe';
 
 interface BottomNavProps {
-  currentScreen: 'home' | 'camera' | 'check' | 'results' | 'learn';
-  onNavigate: (screen: 'home' | 'camera' | 'check' | 'results' | 'learn') => void;
+  currentScreen: ScreenType;
+  onNavigate: (screen: ScreenType) => void;
   onOpenDemoPicker?: () => void;
 }
 
@@ -53,6 +54,19 @@ export const BottomNav: React.FC<BottomNavProps> = ({
         >
           <Sparkles className="w-5 h-5 text-amber-500" />
           <span className="text-[11px] mt-1 text-slate-600">Demo</span>
+        </button>
+
+        <button
+          onClick={() => onNavigate('map')}
+          aria-current={currentScreen === 'map' ? 'page' : undefined}
+          className={`flex flex-col items-center justify-center w-16 py-1 transition-colors ${
+            currentScreen === 'map'
+              ? 'text-brand-600 font-bold'
+              : 'text-slate-500 hover:text-slate-900 font-medium'
+          }`}
+        >
+          <MapPin className="w-5 h-5" />
+          <span className="text-[11px] mt-1">Map</span>
         </button>
 
         {/* Learn */}
